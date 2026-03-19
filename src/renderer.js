@@ -187,7 +187,12 @@ function playReaction(svgFile, durationMs) {
   };
 
   next.addEventListener("load", swap, { once: true });
-  setTimeout(() => { if (pendingNext === next) swap(); }, 3000);
+  setTimeout(() => {
+    if (pendingNext !== next) return;
+    // If SVG failed to load, abandon swap and keep current display
+    try { if (!next.contentDocument) { next.remove(); pendingNext = null; return; } } catch {}
+    swap();
+  }, 3000);
 
   reactTimer = setTimeout(() => endReaction(), durationMs);
 }
@@ -231,7 +236,11 @@ function swapToSvg(svgFile) {
     clawdEl = next;
   };
   next.addEventListener("load", swap, { once: true });
-  setTimeout(() => { if (pendingNext === next) swap(); }, 3000);
+  setTimeout(() => {
+    if (pendingNext !== next) return;
+    try { if (!next.contentDocument) { next.remove(); pendingNext = null; return; } } catch {}
+    swap();
+  }, 3000);
 }
 
 function startDragReaction() {
@@ -299,7 +308,11 @@ window.electronAPI.onStateChange((state, svg) => {
   };
 
   next.addEventListener("load", swap, { once: true });
-  setTimeout(() => { if (pendingNext === next) swap(); }, 3000);
+  setTimeout(() => {
+    if (pendingNext !== next) return;
+    try { if (!next.contentDocument) { next.remove(); pendingNext = null; return; } } catch {}
+    swap();
+  }, 3000);
 });
 
 // --- Eye tracking (idle state only) ---

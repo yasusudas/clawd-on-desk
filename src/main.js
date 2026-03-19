@@ -47,7 +47,15 @@ const PREFS_PATH = path.join(app.getPath("userData"), "clawd-prefs.json");
 
 function loadPrefs() {
   try {
-    return JSON.parse(fs.readFileSync(PREFS_PATH, "utf8"));
+    const raw = JSON.parse(fs.readFileSync(PREFS_PATH, "utf8"));
+    if (!raw || typeof raw !== "object") return null;
+    // Sanitize numeric fields — corrupted JSON can feed NaN into window positioning
+    for (const key of ["x", "y", "preMiniX", "preMiniY"]) {
+      if (key in raw && (typeof raw[key] !== "number" || !isFinite(raw[key]))) {
+        raw[key] = 0;
+      }
+    }
+    return raw;
   } catch {
     return null;
   }
@@ -248,13 +256,22 @@ function setState(newState, svgOverride) {
     // Cancel current state's auto-return to prevent timer race
     if (autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
     pendingState = newState;
+    const pendingSvgOverride = svgOverride;
     pendingTimer = setTimeout(() => {
       pendingTimer = null;
+      const queued = pendingState;
+      const queuedSvg = pendingSvgOverride;
       pendingState = null;
-      // Re-resolve from live sessions — the captured newState may be stale
-      // (e.g. SessionEnd arrived while we waited, sessions is now empty)
-      const resolved = resolveDisplayState();
-      applyState(resolved, getSvgOverride(resolved));
+      // Oneshot states (error/notification/etc.) are not stored in sessions,
+      // so re-resolving would lose them. Apply the queued state directly.
+      if (ONESHOT_STATES.has(queued)) {
+        applyState(queued, queuedSvg);
+      } else {
+        // For persistent states, re-resolve from live sessions — the captured
+        // state may be stale (e.g. SessionEnd arrived while we waited)
+        const resolved = resolveDisplayState();
+        applyState(resolved, getSvgOverride(resolved));
+      }
     }, remaining);
   } else {
     applyState(newState, svgOverride);
