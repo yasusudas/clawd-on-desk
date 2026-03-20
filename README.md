@@ -15,7 +15,7 @@ A desktop pet that reacts to your [Claude Code](https://docs.anthropic.com/en/do
 - **Real-time state awareness** — Claude Code hooks drive Clawd's animations automatically
 - **12 animated states** — idle, thinking, typing, building, juggling, conducting, error, happy, notification, sweeping, carrying, sleeping
 - **Eye tracking** — Clawd follows your cursor in idle state, with body lean and shadow stretch
-- **Sleep sequence** — yawning, dozing, collapsing, sleeping after 60s idle; mouse movement wakes Clawd
+- **Sleep sequence** — yawning, dozing, collapsing, sleeping after 60s idle; mouse movement triggers a startled wake-up animation
 - **Click-through** — transparent areas pass clicks to windows below; only Clawd's body is interactive
 - **Click reactions** — double-click for a poke, 4 clicks for a flail
 - **Drag from any state** — grab Clawd anytime (Pointer Capture prevents fast-flick drops), release to resume
@@ -23,7 +23,7 @@ A desktop pet that reacts to your [Claude Code](https://docs.anthropic.com/en/do
 - **Subagent awareness** — juggling for 1 subagent, conducting for 2+
 - **Position memory** — Clawd remembers where you left it across restarts
 - **Single instance lock** — prevents duplicate Clawd windows
-- **Mini mode** — drag to right edge or right-click "极简模式"; Clawd hides at screen edge with peek-on-hover, mini alerts/celebrations, and parabolic jump transitions
+- **Mini mode** — drag to right edge or right-click "Mini Mode"; Clawd hides at screen edge with peek-on-hover, mini alerts/celebrations, and parabolic jump transitions
 - **System tray** — resize (S/M/L), do-not-disturb mode, auto-start toggle
 
 ## State Mapping
@@ -111,7 +111,7 @@ hooks/
   clawd-hook.js  # Claude Code hook script (zero deps, 1s timeout)
   install.js     # Safe hook registration into ~/.claude/settings.json
 assets/
-  svg/           # 35 pixel-art SVG animations with CSS keyframes (incl. 6 mini mode)
+  svg/           # 37 pixel-art SVG animations with CSS keyframes (incl. 6 mini mode)
   gif/           # Recorded GIFs for documentation
 ```
 
