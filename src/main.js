@@ -3,6 +3,14 @@ const http = require("http");
 const path = require("path");
 const fs = require("fs");
 
+const isMac = process.platform === "darwin";
+
+// macOS: hide dock icon (LSUIElement in Info.plist handles built apps,
+// this covers development mode via `npm start`)
+if (isMac && app.dock) {
+  app.dock.hide();
+}
+
 // ── Window size presets ──
 const SIZES = {
   S: { width: 200, height: 200 },
@@ -799,7 +807,9 @@ function startHttpServer() {
 
 // ── System tray ──
 function createTray() {
-  const icon = nativeImage.createFromPath(path.join(__dirname, "../assets/tray-icon.png")).resize({ width: 32, height: 32 });
+  const traySize = isMac ? 16 : 32;
+  const icon = nativeImage.createFromPath(path.join(__dirname, "../assets/tray-icon.png")).resize({ width: traySize, height: traySize });
+  if (isMac) icon.setTemplateImage(true);
   tray = new Tray(icon);
   tray.setToolTip("Clawd Desktop Pet");
   buildTrayMenu();
@@ -950,6 +960,11 @@ function createWindow() {
   });
 
   win.setFocusable(false);
+  // macOS: show on all Spaces (virtual desktops) and use floating window level
+  if (isMac) {
+    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: false });
+    win.setAlwaysOnTop(true, "floating");
+  }
   win.loadFile(path.join(__dirname, "index.html"));
   win.showInactive();
 
@@ -1035,11 +1050,14 @@ function createWindow() {
   // Use moveTop() instead of setAlwaysOnTop(false→true) to avoid a brief
   // gap where the window loses TOPMOST status — that gap lets other windows
   // slip above Clawd during window switches.
-  moveTopTimer = setInterval(() => {
-    if (win && !win.isDestroyed()) {
-      win.moveTop();
-    }
-  }, 30000); // every 30s
+  // Not needed on macOS — the window manager maintains z-order correctly.
+  if (!isMac) {
+    moveTopTimer = setInterval(() => {
+      if (win && !win.isDestroyed()) {
+        win.moveTop();
+      }
+    }, 30000); // every 30s
+  }
 
   // ── Display change: re-clamp window to prevent off-screen ──
   screen.on("display-metrics-changed", () => {
