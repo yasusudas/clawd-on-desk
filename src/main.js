@@ -5,12 +5,6 @@ const fs = require("fs");
 
 const isMac = process.platform === "darwin";
 
-// macOS: hide dock icon (LSUIElement in Info.plist handles built apps,
-// this covers development mode via `npm start`)
-if (isMac && app.dock) {
-  app.dock.hide();
-}
-
 // ── Window size presets ──
 const SIZES = {
   S: { width: 200, height: 200 },
@@ -30,6 +24,8 @@ const i18n = {
     sleep: "Sleep (Do Not Disturb)",
     wake: "Wake Clawd",
     startOnLogin: "Start on Login",
+    showInMenuBar: "Show in Menu Bar",
+    showInDock: "Show in Dock",
     language: "Language",
     quit: "Quit",
   },
@@ -43,6 +39,8 @@ const i18n = {
     sleep: "休眠（免打扰）",
     wake: "唤醒 Clawd",
     startOnLogin: "开机自启",
+    showInMenuBar: "在菜单栏显示",
+    showInDock: "在 Dock 显示",
     language: "语言",
     quit: "退出",
   },
@@ -75,6 +73,7 @@ function savePrefs() {
   const data = {
     x, y, size: currentSize,
     miniMode, preMiniX, preMiniY, lang,
+    showTray, showDock,
   };
   try { fs.writeFileSync(PREFS_PATH, JSON.stringify(data)); } catch {}
 }
@@ -182,6 +181,8 @@ let currentSize = "S";
 let contextMenu;
 let doNotDisturb = false;
 let isQuitting = false;
+let showTray = true;
+let showDock = false;
 
 function sendToRenderer(channel, ...args) {
   if (win && !win.isDestroyed()) win.webContents.send(channel, ...args);
@@ -807,6 +808,7 @@ function startHttpServer() {
 
 // ── System tray ──
 function createTray() {
+  if (tray) return;
   const traySize = isMac ? 16 : 32;
   const icon = nativeImage.createFromPath(path.join(__dirname, "../assets/tray-icon.png")).resize({ width: traySize, height: traySize });
   if (isMac) icon.setTemplateImage(true);
@@ -815,9 +817,39 @@ function createTray() {
   buildTrayMenu();
 }
 
+function destroyTray() {
+  if (!tray) return;
+  tray.destroy();
+  tray = null;
+}
+
+function setShowTray(val) {
+  showTray = val;
+  if (showTray) {
+    createTray();
+  } else {
+    destroyTray();
+  }
+  buildContextMenu();
+  savePrefs();
+}
+
+function setShowDock(val) {
+  if (!isMac || !app.dock) return;
+  showDock = val;
+  if (showDock) {
+    app.dock.show();
+  } else {
+    app.dock.hide();
+  }
+  buildTrayMenu();
+  buildContextMenu();
+  savePrefs();
+}
+
 function buildTrayMenu() {
   if (!tray) return;
-  const menu = Menu.buildFromTemplate([
+  const items = [
     {
       label: doNotDisturb ? t("wake") : t("sleep"),
       click: () => doNotDisturb ? disableDoNotDisturb() : enableDoNotDisturb(),
@@ -831,6 +863,26 @@ function buildTrayMenu() {
         app.setLoginItemSettings({ openAtLogin: menuItem.checked });
       },
     },
+  ];
+  // macOS: Dock and Menu Bar visibility toggles
+  if (isMac) {
+    items.push(
+      { type: "separator" },
+      {
+        label: t("showInMenuBar"),
+        type: "checkbox",
+        checked: showTray,
+        click: (menuItem) => setShowTray(menuItem.checked),
+      },
+      {
+        label: t("showInDock"),
+        type: "checkbox",
+        checked: showDock,
+        click: (menuItem) => setShowDock(menuItem.checked),
+      },
+    );
+  }
+  items.push(
     { type: "separator" },
     {
       label: t("language"),
@@ -841,8 +893,8 @@ function buildTrayMenu() {
     },
     { type: "separator" },
     { label: t("quit"), click: () => requestAppQuit() },
-  ]);
-  tray.setContextMenu(menu);
+  );
+  tray.setContextMenu(Menu.buildFromTemplate(items));
 }
 
 // ── Window creation ──
@@ -919,6 +971,15 @@ function createWindow() {
   const prefs = loadPrefs();
   if (prefs && SIZES[prefs.size]) currentSize = prefs.size;
   if (prefs && i18n[prefs.lang]) lang = prefs.lang;
+  // macOS: restore tray/dock visibility from prefs
+  if (isMac && prefs) {
+    if (typeof prefs.showTray === "boolean") showTray = prefs.showTray;
+    if (typeof prefs.showDock === "boolean") showDock = prefs.showDock;
+  }
+  // macOS: apply dock visibility (default hidden)
+  if (isMac && app.dock) {
+    if (showDock) app.dock.show(); else app.dock.hide();
+  }
   const size = SIZES[currentSize];
 
   // Restore saved position, or default to bottom-right of primary display
@@ -969,7 +1030,7 @@ function createWindow() {
   win.showInactive();
 
   buildContextMenu();
-  createTray();
+  if (!isMac || showTray) createTray();
   ensureContextMenuOwner();
 
   ipcMain.on("show-context-menu", showPetContextMenu);
@@ -1345,6 +1406,26 @@ function buildContextMenu() {
       label: doNotDisturb ? t("wake") : t("sleep"),
       click: () => doNotDisturb ? disableDoNotDisturb() : enableDoNotDisturb(),
     },
+  ];
+  // macOS: Dock and Menu Bar visibility toggles
+  if (isMac) {
+    template.push(
+      { type: "separator" },
+      {
+        label: t("showInMenuBar"),
+        type: "checkbox",
+        checked: showTray,
+        click: (menuItem) => setShowTray(menuItem.checked),
+      },
+      {
+        label: t("showInDock"),
+        type: "checkbox",
+        checked: showDock,
+        click: (menuItem) => setShowDock(menuItem.checked),
+      },
+    );
+  }
+  template.push(
     { type: "separator" },
     {
       label: t("language"),
@@ -1355,7 +1436,7 @@ function buildContextMenu() {
     },
     { type: "separator" },
     { label: t("quit"), click: () => requestAppQuit() },
-  ];
+  );
   contextMenu = Menu.buildFromTemplate(template);
 }
 
