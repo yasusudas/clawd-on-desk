@@ -1,10 +1,146 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="stage" xmlns="http://www.w3.org/2000/svg" width="880" height="720" viewBox="-32 -24 88 72" preserveAspectRatio="xMidYMid meet">
-<g id="__cloudling-export-shims" opacity="0" pointer-events="none" style="display:none">
-<g id="scrubber"></g>
-<g id="t-display"></g>
-</g>
-<script type="application/ecmascript"><![CDATA[
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Cloudling — carrying (吃云) v5 quicker wrap</title>
+<link rel="icon" href="data:,">
+<style>
+* { margin: 0; box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  background: #1a1a1f;
+  color: #e7e7ee;
+  font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 14px; padding: 24px 24px 48px;
+  transition: background .2s, color .2s;
+}
+body.light { background: #f5f6fb; color: #30313a; }
+h1 { font-size: 16px; font-weight: 650; opacity: .92; }
+h1 .tag {
+  display: inline-block; margin-left: 8px;
+  padding: 2px 9px; border-radius: 4px;
+  background: rgba(177, 167, 255, .22); color: #B1A7FF;
+  font: 700 10px ui-monospace, monospace;
+}
+.meta { max-width: 880px; text-align: center; font-size: 12px; line-height: 1.7; opacity: .72; }
+.meta b { color: #B1A7FF; opacity: 1; }
+body.light .meta b { color: #6B5CFF; }
+
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.toolbar button {
+  background: #2a2a32; color: #c0c0c8;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 7px; padding: 6px 12px; cursor: pointer;
+  font: 11px ui-monospace, monospace;
+}
+.toolbar button:hover { background: #363640; }
+body.light .toolbar button { background: #fff; color: #555; border-color: rgba(0,0,0,.08); }
+
+.scrubber-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; max-width: 880px;
+  background: #11111a; border-radius: 10px; padding: 10px 16px;
+  font: 11px ui-monospace, monospace;
+}
+body.light .scrubber-row { background: #fff; box-shadow: 0 2px 12px rgba(57,65,255,.05); }
+.scrubber-row input { flex: 1; accent-color: #B1A7FF; }
+.scrubber-row .t-val { color: #B1A7FF; font-weight: 600; min-width: 80px; text-align: right; }
+body.light .scrubber-row .t-val { color: #6B5CFF; }
+
+.layout {
+  display: grid; grid-template-columns: 520px 380px;
+  gap: 22px; max-width: 1000px; width: 100%;
+}
+@media (max-width: 940px) { .layout { grid-template-columns: 1fr; } }
+
+.stage-card {
+  background: #11111a; border-radius: 14px;
+  padding: 16px; display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+}
+body.light .stage-card { background: #fff; box-shadow: 0 2px 12px rgba(57,65,255,.05); }
+.stage-bg {
+  background: radial-gradient(circle at 50% 38%, #1a1d2c 0%, #0e1018 100%);
+  border-radius: 10px; padding: 6px;
+  transition: background .2s;
+}
+body.light .stage-bg { background: radial-gradient(circle at 50% 38%, #fff 0%, #eef1fb 100%); }
+.stage-bg svg { display: block; }
+
+.controls {
+  background: #11111a; border-radius: 14px;
+  padding: 14px 16px 18px; display: flex; flex-direction: column;
+  gap: 4px; max-height: 760px; overflow-y: auto;
+}
+body.light .controls { background: #fff; box-shadow: 0 2px 12px rgba(57,65,255,.05); }
+.controls h2 {
+  font: 700 11px ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase; opacity: .55;
+  margin: 12px 0 6px; padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+body.light .controls h2 { border-color: rgba(0,0,0,.06); }
+.controls h2:first-child { margin-top: 0; }
+.row {
+  display: grid; grid-template-columns: 110px 1fr 56px;
+  gap: 8px; align-items: center;
+  font: 10.5px ui-monospace, monospace; padding: 3px 0;
+}
+.row label { opacity: .82; }
+.row input[type="range"] { width: 100%; accent-color: #B1A7FF; }
+.row .val { text-align: right; color: #B1A7FF; font-weight: 600; }
+body.light .row .val { color: #6B5CFF; }
+
+.dump {
+  background: #1f1f28; border-radius: 10px;
+  padding: 10px 14px; font: 10px ui-monospace, monospace;
+  color: #B1A7FF; max-width: 880px; width: 100%;
+  text-align: left; white-space: pre-wrap; line-height: 1.55;
+}
+body.light .dump { background: #fff; color: #6B5CFF; }
+
+.edge-rim-tight { stroke-opacity: .08; }
+.edge-rim-soft  { stroke-opacity: .06; }
+.edge-contact   { stroke-opacity: .08; }
+body.light .edge-rim-tight { stroke-opacity: .15; }
+body.light .edge-rim-soft  { stroke-opacity: .10; }
+body.light .edge-contact   { stroke-opacity: .18; }
+body.light .cloud-drop-shadow { flood-opacity: .13; }
+</style>
+</head>
+<body>
+
+<h1>Cloudling — carrying <span class="tag">吃云 v5 quick wrap</span></h1>
+<div class="meta">
+  循环 4.5s: <b>大小不同的食物云飘入 → 贴到边缘 → 侧边外鼓包裹 → 同化成身体 puff → duang duang spring → 飘回中心</b>. 无嘴吃云, 用软体包裹表达.
+</div>
+
+<div class="toolbar">
+  <button id="btn-theme" type="button">light / dark</button>
+  <button id="btn-pause" type="button">⏸ pause / ▶ play</button>
+  <button id="btn-replay" type="button">↻ replay</button>
+  <button id="btn-reset" type="button">reset 默认</button>
+  <button id="btn-dump" type="button">dump 当前参数</button>
+</div>
+
+<div class="scrubber-row">
+  <span>scrub:</span>
+  <input type="range" id="scrubber" min="0" max="4.5" step="0.01" value="0">
+  <span class="t-val" id="t-display">0.00 s</span>
+</div>
+
+<div class="layout">
+  <div class="stage-card">
+    <div class="stage-bg" id="stage"></div>
+    <div style="font: 10px ui-monospace, monospace; opacity: .5;">viewBox -30 -10 84 44 · 拖 scrubber 看任意瞬间</div>
+  </div>
+  <div class="controls" id="controls"></div>
+</div>
+
+<div class="dump" id="dump">点 dump 把当前参数打印到这里...</div>
+
+<script>
 /* =========================================================================
  * Cloudling 主体几何 (沿用 V2 视觉定稿)
  * ========================================================================= */
@@ -215,11 +351,11 @@ function commonDefs(p, cloudD) {
       <feDropShadow class="cloud-drop-shadow" dx="0" dy="0.6" stdDeviation="0.8" flood-color="#3941FF" flood-opacity="${params.cloudShadowOpacity}"/>
     </filter>
     <filter id="${p}-food-shadow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow class="food-cloud-shadow" dx="0" dy="0.28" stdDeviation="0.36" flood-color="#7A9DFF" flood-opacity="0.08"/>
+      <feDropShadow dx="0" dy="0.28" stdDeviation="0.36" flood-color="#7A9DFF" flood-opacity="0.08"/>
     </filter>
     <filter id="${p}-food-melt" x="-60%" y="-60%" width="220%" height="220%">
       <feGaussianBlur stdDeviation="0.10" result="soft"/>
-      <feDropShadow class="food-cloud-shadow" dx="0" dy="0.2" stdDeviation="0.35" flood-color="#3941FF" flood-opacity="0.08"/>
+      <feDropShadow dx="0" dy="0.2" stdDeviation="0.35" flood-color="#3941FF" flood-opacity="0.08"/>
     </filter>
     <filter id="${p}-edge-blur" x="-40%" y="-40%" width="180%" height="180%">
       <feGaussianBlur stdDeviation="0.16"/>
@@ -272,7 +408,7 @@ function makeAbsorbFrontRim(p, opacity) {
   return `
     <g class="absorb-front-rim" opacity="${opacity.toFixed(3)}">
       <use href="#${p}-cloud-shape" fill="none" stroke="#f7f9ff" stroke-width="0.46" stroke-linejoin="round"/>
-      <use class="edge-rim-soft" href="#${p}-cloud-shape" fill="none" stroke="#7A9DFF" stroke-width="0.80" stroke-linejoin="round" filter="url(#${p}-edge-blur)"/>
+      <use href="#${p}-cloud-shape" fill="none" stroke="#7A9DFF" stroke-width="0.80" stroke-linejoin="round" filter="url(#${p}-edge-blur)" opacity="0.32"/>
     </g>
   `;
 }
@@ -539,18 +675,8 @@ function renderFrame(t) {
     : '';
 
   stage.innerHTML = `
-<style>
-.edge-rim-tight { stroke-opacity: .08; }
-.edge-rim-soft { stroke-opacity: .06; }
-.edge-contact { stroke-opacity: .08; }
-@media (prefers-color-scheme: light) {
-.edge-rim-tight { stroke-opacity: .15; }
-.edge-rim-soft { stroke-opacity: .10; }
-.edge-contact { stroke-opacity: .18; }
-.cloud-drop-shadow { flood-opacity: .13; }
-}
-</style>
-<defs>
+    <svg width="560" height="280" viewBox="-30 -10 84 44">
+      <defs>
         ${commonDefs(p, cloudD)}
         <path id="${p}-cloud-shape" d="${cloudD}"/>
       </defs>
@@ -570,6 +696,7 @@ function renderFrame(t) {
           </g>
         </g>
       </g>
+    </svg>
   `;
 }
 
@@ -598,7 +725,119 @@ function loop() {
   renderFrame(t);
   requestAnimationFrame(loop);
 }
-renderFrame(0);
 requestAnimationFrame(loop);
-]]></script>
-</svg>
+
+scrubberEl.addEventListener('mousedown', () => { scrubbing = true; });
+scrubberEl.addEventListener('mouseup', () => {
+  const newT = Number(scrubberEl.value);
+  startT = performance.now();
+  elapsedOffset = newT;
+  scrubbing = false;
+});
+scrubberEl.addEventListener('input', () => {
+  if (scrubbing) tDisplayEl.textContent = `${Number(scrubberEl.value).toFixed(2)} s`;
+});
+
+document.getElementById('btn-theme').addEventListener('click', () => document.body.classList.toggle('light'));
+document.getElementById('btn-pause').addEventListener('click', () => {
+  if (!paused) { pausedAt = performance.now(); paused = true; }
+  else { elapsedOffset += (pausedAt - startT) / 1000; startT = performance.now(); paused = false; }
+});
+document.getElementById('btn-replay').addEventListener('click', () => {
+  startT = performance.now(); elapsedOffset = 0; paused = false;
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  params = { ...DEFAULTS };
+  controlsEl.innerHTML = '';
+  SLIDERS.forEach(makeRow);
+  startT = performance.now(); elapsedOffset = 0;
+});
+document.getElementById('btn-dump').addEventListener('click', () => {
+  const dump = document.getElementById('dump');
+  const lines = ['/* carrying eat-cloud v5 quicker wrap 锁定参数 */', 'const CARRYING_V5_WRAP = {'];
+  for (const k of Object.keys(params)) lines.push(`  ${k}: ${params[k]},`);
+  lines.push('};');
+  dump.textContent = lines.join('\n');
+});
+
+const SLIDERS = [
+  { section: '主周期' },
+  { key: 'T_CYCLE', label: '总周期', min: 3.0, max: 7.0, step: 0.1, unit: 's' },
+
+  { section: '单口时间线 (秒, 半周期内)' },
+  { key: 'T_FOOD_ENTER_START', label: '食物云入场', min: 0, max: 0.6, step: 0.05 },
+  { key: 'T_INTERCEPT_START', label: '云宝起飞', min: 0.2, max: 1.0, step: 0.05 },
+  { key: 'T_CONTACT', label: '接触瞬间', min: 0.7, max: 1.5, step: 0.05 },
+  { key: 'T_SWALLOW_END', label: '融完', min: 1.0, max: 1.6, step: 0.05 },
+  { key: 'T_RETURN_END', label: '飘回中心', min: 1.5, max: 2.25, step: 0.05 },
+
+  { section: 'duang spring (融入后弹)' },
+  { key: 'springAmp', label: '弹幅', min: 0.05, max: 0.30, step: 0.01 },
+  { key: 'springFreq', label: '弹频', min: 2, max: 8, step: 0.1, unit: 'Hz' },
+  { key: 'springDamping', label: '阻尼', min: 2, max: 12, step: 0.1 },
+  { key: 'springDuration', label: '弹时长', min: 0.3, max: 1.2, step: 0.05, unit: 's' },
+
+  { section: '食物云 (贴边 + 包裹)' },
+  { key: 'foodEnterOffsetX', label: '画外起点偏移 X', min: 12, max: 28, step: 0.5 },
+  { key: 'foodTargetOffsetX', label: '接触位置偏移 X', min: 7, max: 16, step: 0.5 },
+  { key: 'foodTargetY', label: '接触位置 Y', min: 6, max: 18, step: 0.5 },
+  { key: 'foodEnterYDelta', label: '入场 Y 偏移', min: -8, max: 8, step: 0.5 },
+  { key: 'foodExitOvershoot', label: '贴边压入', min: 0, max: 4, step: 0.1 },
+  { key: 'foodSize', label: '食物云大小', min: 0.5, max: 1.6, step: 0.05 },
+  { key: 'foodSizeRight', label: '右云倍率', min: 0.6, max: 1.5, step: 0.01 },
+  { key: 'foodSizeLeft', label: '左云倍率', min: 0.5, max: 1.3, step: 0.01 },
+  { key: 'foodOpacity', label: '食物云不透明', min: 0.4, max: 1.0, step: 0.05 },
+  { key: 'foodDriftY', label: '飘动幅度 Y', min: 0, max: 1.5, step: 0.05 },
+
+  { section: '云宝拦截' },
+  { key: 'interceptDx', label: '拦截 X 偏移', min: 0, max: 9, step: 0.5 },
+  { key: 'interceptDyMatch', label: '对角拦截 (0/1)', min: 0, max: 1, step: 1 },
+  { key: 'interceptDy', label: '固定 Y 偏移', min: -3, max: 3, step: 0.5 },
+  { key: 'interceptEyePeekX', label: '眼朝食偏 X', min: 0, max: 3, step: 0.1 },
+  { key: 'interceptEyePeekY', label: '眼朝食偏 Y', min: -2, max: 2, step: 0.1 },
+  { key: 'bodyRollFactor', label: '滚轮强度', min: 0, max: 2.5, step: 0.05 },
+  { key: 'bodyRollMax', label: '滚轮上限', min: 0, max: 15, step: 0.5, unit: '°' },
+
+  { section: '接触 deform' },
+  { key: 'contactSideX', label: '接触点 X', min: 18, max: 22, step: 0.1 },
+  { key: 'contactSideY', label: '接触点 Y', min: 8, max: 16, step: 0.5 },
+  { key: 'contactPressureMax', label: '包裹强度', min: 0, max: 1.2, step: 0.05 },
+  { key: 'wrapBulgeOffset', label: '外鼓距离', min: 0.3, max: 3.2, step: 0.05 },
+  { key: 'absorbDepth', label: '同化贴近', min: 0, max: 3, step: 0.1 },
+  { key: 'absorbSqueezeX', label: '同化横压', min: 0.35, max: 1.0, step: 0.01 },
+  { key: 'absorbSqueezeY', label: '同化纵鼓', min: 0.9, max: 1.4, step: 0.01 },
+
+  { section: '呼吸' },
+  { key: 'breathLow', label: '呼吸下界', min: 0.92, max: 1.0, step: 0.005 },
+  { key: 'breathHigh', label: '呼吸上界', min: 1.0, max: 1.08, step: 0.005 },
+];
+
+const controlsEl = document.getElementById('controls');
+
+function makeRow(cfg) {
+  if (cfg.section) {
+    const h = document.createElement('h2');
+    h.textContent = cfg.section;
+    controlsEl.appendChild(h);
+    return;
+  }
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = `
+    <label>${cfg.label}</label>
+    <input type="range" min="${cfg.min}" max="${cfg.max}" step="${cfg.step}" value="${params[cfg.key]}">
+    <span class="val">${params[cfg.key]}${cfg.unit||''}</span>
+  `;
+  controlsEl.appendChild(row);
+  const input = row.querySelector('input');
+  const val = row.querySelector('.val');
+  input.addEventListener('input', () => {
+    const v = Number(input.value);
+    params[cfg.key] = v;
+    val.textContent = `${v}${cfg.unit||''}`;
+  });
+}
+SLIDERS.forEach(makeRow);
+</script>
+</body>
+</html>

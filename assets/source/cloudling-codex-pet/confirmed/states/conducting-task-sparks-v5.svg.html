@@ -1,32 +1,138 @@
-<svg id="stageSvg" xmlns="http://www.w3.org/2000/svg" width="880" height="720" viewBox="-32 -24 88 72" preserveAspectRatio="xMidYMid meet">
-<style><![CDATA[
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Cloudling — conducting task sparks v5</title>
+<style>
+* { margin: 0; box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  background: #1a1a1f;
+  color: #e0e0e6;
+  font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 36px;
+  gap: 16px;
+  transition: background .2s, color .2s;
+}
+body.light { background: #f4f4f6; color: #333; }
+h1 { font-size: 15px; font-weight: 650; opacity: .92; }
+.tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(122, 157, 255, .18);
+  color: #7A9DFF;
+  font: 600 10px ui-monospace, monospace;
+}
+.meta { max-width: 920px; text-align: center; font-size: 11px; line-height: 1.7; opacity: .68; }
+.meta b { color: #B1A7FF; }
+body.light .meta b { color: #3941FF; }
+.workspace { display: grid; grid-template-columns: 640px 320px; gap: 18px; align-items: start; }
+.stage {
+  background: #0f0f14;
+  border-radius: 12px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.38);
+  overflow: hidden;
+}
+body.light .stage { background: #fff; box-shadow: 0 18px 60px -20px rgba(57,65,255,.18), 0 4px 12px rgba(0,0,0,0.04); }
+.stage svg { display: block; width: 640px; height: 640px; }
+.params {
+  background: #111116;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 8px;
+  font-size: 11px;
+}
+body.light .params { background: #fff; border-color: rgba(0,0,0,.06); color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.params h3 {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  color: #8f97aa;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+body.light .params h3 { color: #999; border-color: rgba(0,0,0,.06); }
+.params h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.params h3.starA { color: #7A9DFF; }
+.params h3.starB { color: #B1A7FF; }
+.params label { display: grid; grid-template-columns: 96px 1fr 64px; gap: 8px; align-items: center; }
+.params label.cb { grid-template-columns: auto 1fr; }
+.params input[type="range"] { accent-color: #7A9DFF; }
+.params .v { color: #B1A7FF; text-align: right; font: 650 10px ui-monospace, monospace; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+button {
+  border: 1px solid rgba(122,157,255,.25);
+  background: rgba(122,157,255,.12);
+  color: #dfe5ff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+body.light button { background: #fff; color: #555; border-color: rgba(0,0,0,.10); }
+button.secondary { border-color: rgba(255,255,255,.10); background: rgba(255,255,255,.05); color: #b8bdc8; }
+body.light button.secondary { background: #fff; color: #777; }
+.readout {
+  grid-column: 1 / -1;
+  width: min(978px, 100%);
+  background: #111116;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #8f97aa;
+  font: 10.5px/1.65 ui-monospace, monospace;
+  white-space: pre-wrap;
+}
+body.light .readout { background: #fff; color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
 #stageBg { fill: #0f0f14; }
+body.light #stageBg { fill: #fff; }
+@media (max-width: 1040px) {
+  .workspace { grid-template-columns: 1fr; }
+  .stage svg { width: min(640px, 100vw - 48px); height: auto; }
+}
 .edge-rim-tight { stroke-opacity: .08; }
 .edge-rim-soft { stroke-opacity: .06; }
 .edge-contact { stroke-opacity: .08; }
+body.light .edge-rim-tight { stroke-opacity: .15; }
+body.light .edge-rim-soft { stroke-opacity: .10; }
+body.light .edge-contact { stroke-opacity: .18; }
+body.light .cloud-drop-shadow { flood-opacity: .13; }
 .orbit-track { stroke: rgba(177,167,255,.13); stroke-width: 0.13; fill: none; stroke-dasharray: 0.45 0.65; }
+body.light .orbit-track { stroke: rgba(57,65,255,.22); }
 .trail-spark { pointer-events: none; }
 .spark-shell { stroke: rgba(255,255,255,.82); stroke-width: 0.075; stroke-linejoin: round; }
 .spark-core { fill: #FFFDF0; opacity: .20; }
-@media (prefers-color-scheme: light) {
-#stageBg { fill: #fff; }
-.edge-rim-tight { stroke-opacity: .15; }
-.edge-rim-soft { stroke-opacity: .10; }
-.edge-contact { stroke-opacity: .18; }
-.cloud-drop-shadow { flood-opacity: .13; }
-.orbit-track { stroke: rgba(57,65,255,.22); }
-.spark-shell { stroke: rgba(255,255,255,.82); stroke-width: 0.075; }
-.spark-core { opacity: .20; }
-#taskTrailLayer use, #taskABack, #taskBBack, #taskCBack, #taskDBack, #taskAFront, #taskBFront, #taskCFront, #taskDFront { filter: url(#task-glow); }
-.food-cloud-shadow { flood-opacity: .28; flood-color: #5060FF; }
-.food-cloud > path {
-  stroke: #5870E8 !important;
-  stroke-width: 1.2 !important;
-  stroke-opacity: .9 !important;
-  vector-effect: non-scaling-stroke !important;
-}
-}
-]]></style>
+body.light .spark-shell { stroke: rgba(255,255,255,.82); stroke-width: 0.075; }
+body.light .spark-core { opacity: .20; }
+body.light #taskTrailLayer use,
+body.light #taskABack,
+body.light #taskBBack,
+body.light #taskCBack,
+body.light #taskDBack,
+body.light #taskAFront,
+body.light #taskBFront,
+body.light #taskCFront,
+body.light #taskDFront { filter: url(#task-glow); }
+</style>
+</head>
+<body>
+
+<h1>Cloudling — conducting task sparks <span class="tag">SVG · WIP C v5</span></h1>
+<div class="meta">
+  C 方向: 保留双椭圆 orbit 数学, 但把大五角星改成 4 个小 task sparks. Cloudling 用眼神按 A/B/C/D 点名; 被点名的 spark 亮起并归位, 最后一拍同步 pulse.
+  默认隐藏完整轨道, 用短尾迹提示流动路径. 调参 demo, 不是最终视觉精修.
+</div>
+
+<div class="workspace">
+  <div class="stage">
+    <svg id="stageSvg" viewBox="-10 -10 44 44" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="body-grad" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#ffffff"/>
@@ -111,7 +217,10 @@
                 class="spark-core"/>
         </symbol>
       </defs>
-<g id="orbitTrackLayer">
+
+      <rect id="stageBg" x="-10" y="-10" width="44" height="44"/>
+
+      <g id="orbitTrackLayer">
         <path id="orbitTrackA" class="orbit-track"/>
         <path id="orbitTrackB" class="orbit-track"/>
       </g>
@@ -168,13 +277,71 @@
       <use id="taskBFront" href="#taskB-symbol" filter="url(#task-glow)"/>
       <use id="taskCFront" href="#taskC-symbol" filter="url(#task-glow)"/>
       <use id="taskDFront" href="#taskD-symbol" filter="url(#task-glow)"/>
-    <g id="__cloudling-export-shims" opacity="0" pointer-events="none" style="display:none">
-<g id="readout"></g>
-<g id="scrub"></g>
-<g id="scrubV"></g>
-</g>
+    </svg>
+  </div>
 
-<script type="application/ecmascript"><![CDATA[
+  <div class="params">
+    <h3 class="starA">A/C 流 (横向, 蓝青)</h3>
+    <label><span>周期</span><input id="durA" type="range" min="2.5" max="6" step="0.1" value="4.0"><span class="v" id="durAV">4.0s</span></label>
+    <label><span>横半径 rx</span><input id="rxA" type="range" min="8" max="20" step="0.2" value="14"><span class="v" id="rxAV">14.0</span></label>
+    <label><span>纵半径 ry</span><input id="ryA" type="range" min="2" max="8" step="0.1" value="4"><span class="v" id="ryAV">4.0</span></label>
+    <label><span>倾斜角</span><input id="tiltA" type="range" min="-40" max="40" step="1" value="-10"><span class="v" id="tiltAV">-10°</span></label>
+    <label><span>起始相位</span><input id="theta0A" type="range" min="0" max="360" step="5" value="0"><span class="v" id="theta0AV">0°</span></label>
+
+    <h3 class="starB">B/D 流 (纵向, 紫粉)</h3>
+    <label><span>周期</span><input id="durB" type="range" min="3" max="9" step="0.1" value="6.0"><span class="v" id="durBV">6.0s</span></label>
+    <label><span>横半径 rx</span><input id="rxB" type="range" min="2" max="10" step="0.2" value="4"><span class="v" id="rxBV">4.0</span></label>
+    <label><span>纵半径 ry</span><input id="ryB" type="range" min="6" max="16" step="0.2" value="11"><span class="v" id="ryBV">11.0</span></label>
+    <label><span>倾斜角</span><input id="tiltB" type="range" min="-40" max="40" step="1" value="20"><span class="v" id="tiltBV">20°</span></label>
+    <label><span>起始相位</span><input id="theta0B" type="range" min="0" max="360" step="5" value="180"><span class="v" id="theta0BV">180°</span></label>
+
+    <h3>Task sparks</h3>
+    <label><span>尺寸</span><input id="starSize" type="range" min="0.55" max="2.4" step="0.05" value="1.75"><span class="v" id="starSizeV">1.75</span></label>
+    <label><span>背面缩放</span><input id="backScale" type="range" min="0.55" max="0.95" step="0.02" value="0.74"><span class="v" id="backScaleV">0.74</span></label>
+    <label><span>背面透明</span><input id="backOpacity" type="range" min="0.08" max="0.65" step="0.02" value="0.28"><span class="v" id="backOpacityV">0.28</span></label>
+    <label><span>前景阈值</span><input id="depthSnap" type="range" min="0.04" max="0.30" step="0.01" value="0.16"><span class="v" id="depthSnapV">0.16</span></label>
+    <label><span>自转速度</span><input id="starSpin" type="range" min="0" max="180" step="5" value="65"><span class="v" id="starSpinV">65°/s</span></label>
+
+    <h3>最终队形</h3>
+    <label><span>队形半径</span><input id="slotRadius" type="range" min="9" max="18" step="0.1" value="14.0"><span class="v" id="slotRadiusV">14.0</span></label>
+    <label><span>纵向压缩</span><input id="slotSquash" type="range" min="0.60" max="1.25" step="0.02" value="0.96"><span class="v" id="slotSquashV">0.96</span></label>
+    <label><span>队形旋转</span><input id="slotRot" type="range" min="-45" max="45" step="1" value="0"><span class="v" id="slotRotV">0°</span></label>
+
+    <h3>点位微调</h3>
+    <label><span>A X</span><input id="slotAX" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotAXV">0.0</span></label>
+    <label><span>A Y</span><input id="slotAY" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotAYV">0.0</span></label>
+    <label><span>B X</span><input id="slotBX" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotBXV">0.0</span></label>
+    <label><span>B Y</span><input id="slotBY" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotBYV">0.0</span></label>
+    <label><span>C X</span><input id="slotCX" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotCXV">0.0</span></label>
+    <label><span>C Y</span><input id="slotCY" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotCYV">0.0</span></label>
+    <label><span>D X</span><input id="slotDX" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotDXV">0.0</span></label>
+    <label><span>D Y</span><input id="slotDY" type="range" min="-4" max="4" step="0.1" value="0"><span class="v" id="slotDYV">0.0</span></label>
+
+    <h3>Cloudling</h3>
+    <label><span>球化幅度</span><input id="morphAmt" type="range" min="0" max="0.20" step="0.005" value="0.04"><span class="v" id="morphAmtV">4%</span></label>
+    <label><span>球化周期</span><input id="morphPeriod" type="range" min="3" max="8" step="0.5" value="5"><span class="v" id="morphPeriodV">5.0s</span></label>
+    <label><span>目标 R</span><input id="cloudR" type="range" min="6.5" max="9" step="0.1" value="7.5"><span class="v" id="cloudRV">7.5</span></label>
+
+    <h3>眼睛</h3>
+    <label><span>追随强度</span><input id="eyeShift" type="range" min="0.4" max="1.6" step="0.05" value="1.10"><span class="v" id="eyeShiftV">1.10</span></label>
+    <label><span>点名节拍</span><input id="eyeSwitchT" type="range" min="0.8" max="2.4" step="0.05" value="1.15"><span class="v" id="eyeSwitchTV">1.15s</span></label>
+    <label><span>saccade 时长</span><input id="saccade" type="range" min="0.05" max="0.35" step="0.01" value="0.13"><span class="v" id="saccadeV">0.13s</span></label>
+
+    <h3>调试</h3>
+    <label class="cb"><input id="showTracks" type="checkbox"><span>显示轨道线</span></label>
+    <label class="cb"><input id="pause" type="checkbox"><span>暂停</span></label>
+    <label class="cb"><input id="bg" type="checkbox"><span>浅色背景</span></label>
+    <label><span>scrub</span><input id="scrub" type="range" min="0" max="12" step="0.05" value="0"><span class="v" id="scrubV">0.00s</span></label>
+    <div class="btn-row">
+      <button id="play">播放</button>
+      <button id="snap" class="secondary">打印当前参数</button>
+    </div>
+  </div>
+</div>
+
+<div class="readout" id="readout"></div>
+
+<script>
 const CLOUD_D = "M9.064 3.344a4.578 4.578 0 012.285-.312c1 .115 1.891.54 2.673 1.275.01.01.024.017.037.021a.09.09 0 00.043 0 4.55 4.55 0 013.046.275l.047.022.116.057a4.581 4.581 0 012.188 2.399c.209.51.313 1.041.315 1.595a4.24 4.24 0 01-.134 1.223.123.123 0 00.03.115c.594.607.988 1.33 1.183 2.17.289 1.425-.007 2.71-.887 3.854l-.136.166a4.548 4.548 0 01-2.201 1.388.123.123 0 00-.081.076c-.191.551-.383 1.023-.74 1.494-.9 1.187-2.222 1.846-3.711 1.838-1.187-.006-2.239-.44-3.157-1.302a.107.107 0 00-.105-.024c-.388.125-.78.143-1.204.138a4.441 4.441 0 01-1.945-.466 4.544 4.544 0 01-1.61-1.335c-.152-.202-.303-.392-.414-.617a5.81 5.81 0 01-.37-.961 4.582 4.582 0 01-.014-2.298.124.124 0 00.006-.056.085.085 0 00-.027-.048 4.467 4.467 0 01-1.034-1.651 3.896 3.896 0 01-.251-1.192 5.189 5.189 0 01.141-1.6c.337-1.112.982-1.985 1.933-2.618.212-.141.413-.251.601-.33.215-.089.43-.164.646-.227a.098.098 0 00.065-.066 4.51 4.51 0 01.829-1.615 4.535 4.535 0 011.837-1.388z";
 
 const CENTER = { x: 12, y: 12 };
@@ -611,6 +778,75 @@ function loop(nowMs) {
   requestAnimationFrame(loop);
 }
 
+function bindRange(id, key, fmt) {
+  const el = document.getElementById(id);
+  const out = document.getElementById(id + 'V');
+  const update = () => {
+    P[key] = parseFloat(el.value);
+    out.textContent = fmt(P[key]);
+  };
+  el.addEventListener('input', update);
+  update();
+}
+
+bindRange('durA', 'durA', v => `${v.toFixed(1)}s`);
+bindRange('rxA', 'rxA', v => v.toFixed(1));
+bindRange('ryA', 'ryA', v => v.toFixed(1));
+bindRange('tiltA', 'tiltA', v => `${v.toFixed(0)}°`);
+bindRange('theta0A', 'theta0A', v => `${v.toFixed(0)}°`);
+bindRange('durB', 'durB', v => `${v.toFixed(1)}s`);
+bindRange('rxB', 'rxB', v => v.toFixed(1));
+bindRange('ryB', 'ryB', v => v.toFixed(1));
+bindRange('tiltB', 'tiltB', v => `${v.toFixed(0)}°`);
+bindRange('theta0B', 'theta0B', v => `${v.toFixed(0)}°`);
+bindRange('starSize', 'starSize', v => v.toFixed(2));
+bindRange('backScale', 'backScale', v => v.toFixed(2));
+bindRange('backOpacity', 'backOpacity', v => v.toFixed(2));
+bindRange('depthSnap', 'depthSnap', v => v.toFixed(2));
+bindRange('starSpin', 'starSpin', v => `${v.toFixed(0)}°/s`);
+bindRange('slotRadius', 'slotRadius', v => v.toFixed(1));
+bindRange('slotSquash', 'slotSquash', v => v.toFixed(2));
+bindRange('slotRot', 'slotRot', v => `${v.toFixed(0)}°`);
+bindRange('slotAX', 'slotAX', v => v.toFixed(1));
+bindRange('slotAY', 'slotAY', v => v.toFixed(1));
+bindRange('slotBX', 'slotBX', v => v.toFixed(1));
+bindRange('slotBY', 'slotBY', v => v.toFixed(1));
+bindRange('slotCX', 'slotCX', v => v.toFixed(1));
+bindRange('slotCY', 'slotCY', v => v.toFixed(1));
+bindRange('slotDX', 'slotDX', v => v.toFixed(1));
+bindRange('slotDY', 'slotDY', v => v.toFixed(1));
+bindRange('morphAmt', 'morphAmt', v => `${Math.round(v*100)}%`);
+bindRange('morphPeriod', 'morphPeriod', v => `${v.toFixed(1)}s`);
+bindRange('cloudR', 'cloudR', v => v.toFixed(1));
+bindRange('eyeShift', 'eyeShift', v => v.toFixed(2));
+bindRange('eyeSwitchT', 'eyeSwitchT', v => `${v.toFixed(2)}s`);
+bindRange('saccade', 'saccade', v => `${v.toFixed(2)}s`);
+
+document.getElementById('showTracks').addEventListener('change', e => {
+  P.showTracks = e.target.checked;
+});
+document.getElementById('pause').addEventListener('change', e => {
+  P.pause = e.target.checked;
+  if (!P.pause) startTime = performance.now() - scrubTime * 1000;
+});
+document.getElementById('bg').addEventListener('change', e => {
+  document.body.classList.toggle('light', e.target.checked);
+});
+els.scrub.addEventListener('input', e => {
+  P.pause = true;
+  document.getElementById('pause').checked = true;
+  scrubTime = parseFloat(e.target.value);
+});
+document.getElementById('play').addEventListener('click', () => {
+  P.pause = false;
+  document.getElementById('pause').checked = false;
+  startTime = performance.now() - scrubTime * 1000;
+});
+document.getElementById('snap').addEventListener('click', () => {
+  console.log(JSON.stringify(P, null, 2));
+});
+
 requestAnimationFrame(loop);
-]]></script>
-</svg>
+</script>
+</body>
+</html>

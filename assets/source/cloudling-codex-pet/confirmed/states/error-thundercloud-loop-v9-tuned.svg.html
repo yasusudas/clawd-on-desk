@@ -1,9 +1,114 @@
-<svg id="svg" xmlns="http://www.w3.org/2000/svg" width="880" height="720" viewBox="-32 -24 88 72" preserveAspectRatio="xMidYMid meet">
-<style><![CDATA[
-.edge-rim-tight { stroke-opacity: .08; }
-.edge-rim-soft  { stroke-opacity: .06; }
-.edge-contact   { stroke-opacity: .08; }
-.statusbar, .preset {
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Cloudling — error thundercloud loop v9 tuned</title>
+<style>
+* { margin: 0; box-sizing: border-box; }
+body {
+  background: #090b16;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 34px;
+  font-family: system-ui, -apple-system, "PingFang SC", sans-serif;
+  color: #e0e0e6;
+  gap: 14px;
+}
+body.light { background: #f4f4f6; color: #333; }
+h1 { font-size: 15px; font-weight: 600; opacity: .9; }
+h1 .tag {
+  display: inline-block;
+  background: rgba(122, 157, 255, 0.18);
+  color: #7A9DFF;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: ui-monospace, monospace;
+  margin-left: 6px;
+}
+.meta {
+  font-size: 11px;
+  opacity: .72;
+  text-align: center;
+  max-width: 820px;
+  line-height: 1.6;
+}
+.meta b { color: #9fb2ff; opacity: 1; }
+body.light .meta b { color: #3941FF; }
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 11px;
+}
+.toolbar button {
+  background: #1f2230;
+  color: #c8cad8;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 10px;
+  font-family: ui-monospace, monospace;
+}
+.toolbar button:hover { background: #2a3044; }
+body.light .toolbar button { background: #fff; color: #555; border-color: rgba(0,0,0,.08); }
+.stage {
+  background: radial-gradient(circle at 50% 42%, #111528 0%, #090b16 62%, #060711 100%);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0,0,0,.42);
+  overflow: hidden;
+}
+body.light .stage {
+  background: #fff;
+  box-shadow: 0 18px 60px -20px rgba(57, 65, 255, 0.18), 0 4px 12px rgba(0,0,0,0.04);
+}
+.stage svg { display: block; width: 360px; height: 360px; }
+.params {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 28px;
+  background: #151824;
+  border-radius: 12px;
+  padding: 16px 22px;
+  font-size: 11px;
+  color: #c0c0c8;
+  min-width: min(820px, calc(100vw - 40px));
+}
+body.light .params { background: #fff; color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.params h3 {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #858ca8;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding-bottom: 4px;
+}
+body.light .params h3 { color: #999; border-color: rgba(0,0,0,.06); }
+.params h3:first-child { margin-top: 0; }
+.params label {
+  display: grid;
+  grid-template-columns: 160px 1fr 70px;
+  gap: 8px;
+  align-items: center;
+}
+.params input[type="range"] { accent-color: #7A9DFF; }
+.params .val {
+  font-family: ui-monospace, monospace;
+  text-align: right;
+  font-size: 10px;
+  opacity: .8;
+}
+.statusbar,
+.preset {
   font-size: 10px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color: #9fb2ff;
@@ -20,21 +125,29 @@
   white-space: pre-wrap;
   line-height: 1.45;
 }
-@media (prefers-color-scheme: light) {
-.edge-rim-tight { stroke-opacity: .15; }
-.edge-rim-soft  { stroke-opacity: .10; }
-.edge-contact   { stroke-opacity: .18; }
-.cloud-drop-shadow { flood-opacity: .13; }
-.statusbar, .preset { background: #fff; color: #3941FF; }
-.food-cloud-shadow { flood-opacity: .28; flood-color: #5060FF; }
-.food-cloud > path {
-  stroke: #5870E8 !important;
-  stroke-width: 1.2 !important;
-  stroke-opacity: .9 !important;
-  vector-effect: non-scaling-stroke !important;
+body.light .statusbar,
+body.light .preset { background: #fff; color: #3941FF; }
+@media (max-width: 760px) {
+  .params { grid-template-columns: 1fr; }
+  .params label { grid-template-columns: 140px 1fr 60px; }
+  .stage svg { width: min(360px, calc(100vw - 40px)); height: auto; }
 }
-}
-]]></style>
+</style>
+</head>
+<body>
+<h1>Cloudling — error thundercloud loop v9 <span class="tag">tuned</span></h1>
+<div class="meta">
+  v9 定稿候选：使用鹿鹿确认的滑杆数据，保留 v8 的<b>稳定漫反射乌云</b>，只让云体形变、内部位移流动和雨势同步循环。
+</div>
+
+<div class="toolbar">
+  <button id="btn-theme">light / dark</button>
+  <button id="btn-pause">pause / resume</button>
+  <button id="btn-reset">reset defaults</button>
+</div>
+
+<div class="stage">
+  <svg id="svg" width="360" height="360" viewBox="-12 -12 48 48" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <path id="cloud-shape" d="M9.064 3.344a4.578 4.578 0 012.285-.312c1 .115 1.891.54 2.673 1.275.01.01.024.017.037.021a.09.09 0 00.043 0 4.55 4.55 0 013.046.275l.047.022.116.057a4.581 4.581 0 012.188 2.399c.209.51.313 1.041.315 1.595a4.24 4.24 0 01-.134 1.223.123.123 0 00.03.115c.594.607.988 1.33 1.183 2.17.289 1.425-.007 2.71-.887 3.854l-.136.166a4.548 4.548 0 01-2.201 1.388.123.123 0 00-.081.076c-.191.551-.383 1.023-.74 1.494-.9 1.187-2.222 1.846-3.711 1.838-1.187-.006-2.239-.44-3.157-1.302a.107.107 0 00-.105-.024c-.388.125-.78.143-1.204.138a4.441 4.441 0 01-1.945-.466 4.544 4.544 0 01-1.61-1.335c-.152-.202-.303-.392-.414-.617a5.81 5.81 0 01-.37-.961 4.582 4.582 0 01-.014-2.298.124.124 0 00.006-.056.085.085 0 00-.027-.048 4.467 4.467 0 01-1.034-1.651 3.896 3.896 0 01-.251-1.192 5.189 5.189 0 01.141-1.6c.337-1.112.982-1.985 1.933-2.618.212-.141.413-.251.601-.33.215-.089.43-.164.646-.227a.098.098 0 00.065-.066 4.51 4.51 0 01.829-1.615 4.535 4.535 0 011.837-1.388z"/>
       <clipPath id="cloud-clip"><use href="#cloud-shape"/></clipPath>
@@ -115,13 +228,14 @@
         </g>
       </g>
     </g>
-  <g id="__cloudling-export-shims" opacity="0" pointer-events="none" style="display:none">
-<g id="params"></g>
-<g id="preset"></g>
-<g id="statusbar"></g>
-</g>
+  </svg>
+</div>
 
-<script type="application/ecmascript"><![CDATA[
+<div class="statusbar" id="statusbar">phase --</div>
+<div class="params" id="params"></div>
+<pre class="preset" id="preset"></pre>
+
+<script>
 const TAU = Math.PI * 2;
 const DEFAULTS = {
   period: 4.0,
@@ -423,6 +537,20 @@ function loop(now) {
   }
   requestAnimationFrame(loop);
 }
+
+buildParams();
 requestAnimationFrame(loop);
-]]></script>
-</svg>
+
+document.getElementById('btn-theme').onclick = () => document.body.classList.toggle('light');
+document.getElementById('btn-pause').onclick = () => {
+  paused = !paused;
+  if (paused) pauseStart = performance.now();
+  else pausedTotal += performance.now() - pauseStart;
+};
+document.getElementById('btn-reset').onclick = () => {
+  P = { ...DEFAULTS };
+  buildParams();
+};
+</script>
+</body>
+</html>
