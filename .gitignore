@@ -30,3 +30,27 @@ logs/
 # GIF recording tools (not part of main project)
 scripts/
 !scripts/remote-deploy.sh
+
+# Local AI/editor instruction files (not project runtime)
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+CODEX.md
+CURSOR.md
+copilot-instructions.md
+.cursorrules
+.cursor/
+.codex/
+.agents/
+.agent/
+.windsurf/
+.cline/
+.roo/
+.aider/
+.continue/
+.kiro/
+.amazonq/
+.junie/
+.openhands/
+.github/copilot-instructions.md
+dot_github/copilot-instructions.md
